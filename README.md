@@ -2,6 +2,10 @@
 
 documents about stock.
 
+## Version
+
+Beta
+
 ## LICENCE
 
 MIT
