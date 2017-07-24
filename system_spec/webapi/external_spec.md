@@ -8,21 +8,24 @@
   - [Request type](#request-type)
   - [Response type](#response-type)
   - [Error Response](#error-response)
-- [About Information](#about-information)
-  - [GET information list](#get-information-list)
+    - [400](#400)
+    - [404](#404)
+    - [500](#500)
+- [Resource "Information"](#resource-information)
+  - [GET information subject](#get-information-subject)
     - [Request](#request)
     - [Constraint](#constraint)
     - [Example](#example)
     - [Response](#response)
       - [200](#200)
-      - [404](#404)
+      - [404](#404-1)
   - [GET information detail](#get-information-detail)
     - [Request](#request-1)
     - [Constraint](#constraint-1)
     - [Example](#example-1)
     - [Response](#response-1)
       - [200](#200-1)
-      - [404](#404-1)
+      - [404](#404-2)
   - [POST crate information](#post-crate-information)
     - [Request](#request-2)
     - [Constraint](#constraint-2)
@@ -38,7 +41,7 @@
 
 GET is allowed ```application/x-www-form-url-encoded``` or ```application/json```.
 
-POST is only allowed ```application/json```
+POST is only allowed ```application/json```.
 
 ### Response type
 
@@ -46,27 +49,38 @@ Only ```application/json``` is produced.
 
 ### Error Response
 
-When requested path and query does not exist in api resource,
+#### 400
 
-404 response is returned.
-
-```
-{"message":"Not Found", "statusCode": 404}
-```
-
-When requested legal path and query but response is illegal,
-
-500 response should be returned. If api does not seem to recover after a waiting, contact to ....
+When requested exist resource, but parameter's key or value is invalid.
 
 ```
-{"message":"Internal Server Error", "statusCode": 500}
+HTTP/1.1 400 Bad Request
+{"message":"Bad Request", "reason":["xyz is blank"]}
 ```
 
-## About Information
+#### 404
 
-Operations about information.
+When requested not exist resource.
 
-### GET information list
+```
+HTTP/1.1 404 Not Found
+{"message":"location /xyz?abc=def is Not Found"}
+```
+
+#### 500
+
+When requested exist resource, but server happened error.
+
+If api does not seem to recover after a minue, contact to ....
+
+```
+HTTP/1.1 500 Internal Server Error
+{"message":"wait a moment and try again."}
+```
+
+## Resource "Information"
+
+### GET information subject
 
 #### Request
 
@@ -75,8 +89,6 @@ Operations about information.
 ```
 
 #### Constraint
-
-about query
 
 |name|required|default value<br />(passed value when not specified)|constraint|description|note|
 |--|--|--|--|--|--|
@@ -87,7 +99,7 @@ about query
 
 #### Example
 
-**Plan A.** "Get latest created 10 information. Do not think about tag."
+**Plan A.** ```"Get latest created 10 information. Do not think about tag."```
 
 ```
 GET /information?limit=10
@@ -99,7 +111,7 @@ or
 GET /information?sortBy=created
 ```
 
-**Plan B.** "Get latest updated 5 information. The information has 'api'."
+**Plan B.** ```"Get latest updated 5 information. The information has 'api'."```
 
 ```
 GET /information?limit=10&tag=api&sort=updated
@@ -111,7 +123,7 @@ or
 GET /information?limit=10&tag=api&sort=updated&sortBy=asc
 ```
 
-**PlanB.** "Get old updated 5 information. Tag is 'api' and 'document'."
+**PlanC.** ```"Get old updated 5 information. Tag is 'api' and 'document'."```
 
 ```
 GET /information?limit=5&tag=api,document&sort=updated&sortBy=asc
@@ -121,14 +133,14 @@ GET /information?limit=5&tag=api,document&sort=updated&sortBy=asc
 
 ##### 200
 
-Found information.
+When information exist.
 
 ```
+HTTP/1.1 200 OK
 {
-  "statusCode": 200,
   "information": [
     {
-      "infoId":7,
+      "infomationId":7,
       "subject":"knowledge of apidoc",
       "tag": {
         "name":["api", "document"]
@@ -137,7 +149,7 @@ Found information.
       "updated":"2017-01-01-00-00"
     },
     {
-      "infoId":6,
+      "infomationId":6,
       "subject":"apidoc ver2",
       "tag": {
         "name":["api"]
@@ -151,12 +163,11 @@ Found information.
 
 ##### 404
 
-Not found any information.
+When information does not exist.
 
 ```
-{
-  "statusCode": 404
-}
+HTTP/1.1 404 Not Found
+{"message":"information does not found"}
 ```
 
 
@@ -170,15 +181,13 @@ Not found any information.
 
 #### Constraint
 
-about path parameter
-
 |name|constraint|description|note|
-|--|--|--|--|--|
+|--|--|--|--|
 |{id}|Number. 1 to 2^32.|The data identifies information only one.|If number is out of 1 to 2^32, 404 response is returned.|
 
 #### Example
 
-**Plan A.** "Get information of id = 2."
+**Plan A.** ```"Get information of id = 2."```
 
 ```
 GET /information/2
@@ -188,9 +197,10 @@ GET /information/2
 
 ##### 200
 
-Found information.
+When information eixst.
 
 ```
+HTTP/1.1 200 OK
 {
   "statusCode": 200,
   "information": {
@@ -206,12 +216,11 @@ Found information.
 
 ##### 404
 
-Not found any information.
+When information does not exist.
 
 ```
-{
-  "statusCode": 404
-}
+HTTP/1.1 404 OK
+{ "message":"information not found" }
 ```
 
 
@@ -220,10 +229,8 @@ Not found any information.
 #### Request
 
 ```
-/information/create
-```
+POST /information/create
 
-```
 {
   "information": {
     "subject":"note of feature 1 creation",
@@ -237,17 +244,15 @@ Not found any information.
 
 #### Constraint
 
-about request body
-
 |name|constraint|description|note|
-|--|--|--|--|--|
+|--|--|--|--|
 |subject|pass string. null, number, boolean and another type is not permitted.|Information's subject.|-|
 |detail|pass string. null, number, boolean and another type is not permitted.|Information's detail.|-|
 |subject|pass string. null, number, boolean and another type is not permitted.<br />String should be blank, single word or comma separated.|Information's tag.|-|
 
 #### Example
 
-**Plan A.** "Register no tagged information"
+**Plan A.** ```"Register no tagged information"```
 
 ```
 POST /information/create
@@ -263,7 +268,7 @@ POST /information/create
 }
 ```
 
-**Plan B.** "Register information tag is only one."
+**Plan B.** ```"Register information tag is only one."```
 
 ```
 POST /information/create
@@ -279,7 +284,7 @@ POST /information/create
 }
 ```
 
-**Plan B.** "Register information with two tags."
+**Plan C.** ```"Register information with two tags."```
 
 ```
 POST /information/create
@@ -299,33 +304,20 @@ POST /information/create
 
 ##### 201
 
-Information was created.
+When information is created.
 
 ```
+HTTP/1.1 201 Created
 {
-  "statusCode": 201,
-  "location": "/information/8"
-}
-```
-
----
-
-spec change point
-
-* constnize literal
-* re-check commonize error handle > put message; reason
-
-
-
-document change point
-
-divide response header
-
-{
-  "information": {
-    "subject": "foo", << infor.save << inforgtag.save
-    "detail": "bar", << infor.save << infotag.save
-    tag: ["foo", "bar"] << infotag.save
+  "location":"/information/8",
+  "information":{
+    "subject":"hello",
+    "detail":"this is hello detail",
+    "created":"2017-07-01-00-00",
+    "updated":"2017-07-01-01-30",
+    "tag": {
+      "name": ["foo", "bar"]
+    }
   }
-  addedTag: ["bar"] << tag.save
 }
+```
