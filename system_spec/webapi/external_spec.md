@@ -142,18 +142,14 @@ HTTP/1.1 200 OK
     {
       "infomationId":7,
       "subject":"knowledge of apidoc",
-      "tag": {
-        "name":["api", "document"]
-      }
+      "tag": ["api", "document"],
       "created":"2017-03-01-00-00",
       "updated":"2017-01-01-00-00"
     },
     {
       "infomationId":6,
       "subject":"apidoc ver2",
-      "tag": {
-        "name":["api"]
-      }
+      "tag": ["api"],
       "created":"2017-02-01-12-00",
       "updated":"2017-02-01-12-00"
     }
@@ -207,7 +203,7 @@ HTTP/1.1 200 OK
     "infoId":7,
     "subject":"knowledge of apidoc",
     "detail":"when write apidoc, blah blah.",
-    "tag":"api,document",
+    "tag": ["api, document"],
     "created":"2017-03-01-00-00",
     "updated":"2017-01-01-00-00"
   }
@@ -234,10 +230,8 @@ POST /information/create
 {
   "information": {
     "subject":"note of feature 1 creation",
-    "detail":"when create feature 1, see feature 3.\nand..."
-  },
-  "tag": {
-    "name":"api,document"
+    "detail":"when create feature 1, see feature 3.\nand...",
+    "tag": "api,document"
   }
 }
 ```
@@ -260,10 +254,8 @@ POST /information/create
 {
   "information": {
     "subject":"note of feature 1 creation",
-    "detail":"when create feature 1, see feature 3.\nand..."
-  },
-  "tag": {
-    "name":""
+    "detail":"when create feature 1, see feature 3.\nand...",
+    "tag": ""
   }
 }
 ```
@@ -276,11 +268,9 @@ POST /information/create
 {
   "information": {
     "subject":"note of feature 1 creation",
-    "detail":"when create feature 1, see feature 3.\nand..."
+    "detail":"when create feature 1, see feature 3.\nand...",
+    "tag": ["api"]
   },
-  "tag": {
-    "name":"api"
-  }
 }
 ```
 
@@ -292,10 +282,8 @@ POST /information/create
 {
   "information": {
     "subject":"note of feature 1 creation",
-    "detail":"when create feature 1, see feature 3.\nand..."
-  },
-  "tag": {
-    "name":"api,document"
+    "detail":"when create feature 1, see feature 3.\nand...",
+    "tag": ["api,document"]
   }
 }
 ```
@@ -315,9 +303,7 @@ HTTP/1.1 201 Created
     "detail":"this is hello detail",
     "created":"2017-07-01-00-00",
     "updated":"2017-07-01-01-30",
-    "tag": {
-      "name": ["foo", "bar"]
-    }
+    "tag": ["foo", "bar"]
   }
 }
 ```

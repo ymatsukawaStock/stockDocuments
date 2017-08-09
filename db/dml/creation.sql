@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS informationTags;
 DROP TABLE IF EXISTS information;
 DROP TABLE IF EXISTS tag;
+DROP VIEW IF EXISTS viewInformationTags;
 
 CREATE TABLE information (
   informationid BIGSERIAL
@@ -36,3 +37,23 @@ CREATE TABLE informationTags (
   FOREIGN KEY(informationid) REFERENCES information(informationid),
   FOREIGN KEY(tagid) REFERENCES tag(tagid)
 );
+
+CREATE VIEW viewInformationTags
+AS
+SELECT
+  INFO.informationid,
+  INFO.subject,
+  INFO.detail,
+  INFO.created,
+  INFO.updated,
+  TAG.name
+FROM
+  information AS INFO
+INNER JOIN
+  informationtags AS INFOTAG
+ON
+  INFO.informationid = INFOTAG.informationid
+INNER JOIN
+  tag AS TAG
+ON
+  TAG.tagid = INFOTAG.tagid;
