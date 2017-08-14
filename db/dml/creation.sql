@@ -1,4 +1,6 @@
-DROP TABLE IF EXISTS authz;
+DROP VIEW IF EXISTS viewAccountWithAuthentication;
+DROP TABLE IF EXISTS accountauthenticate;
+DROP TABLE IF EXISTS authenticate;
 DROP TABLE IF EXISTS accounttags;
 DROP TABLE IF EXISTS accountinformation;
 DROP TABLE IF EXISTS account;
@@ -27,16 +29,25 @@ CREATE TABLE account (
   UNIQUE(name)
 );
 
-CREATE TABLE authz (
-  authzid BIGSERIAL
+CREATE TABLE authenticate (
+  authenticateid BIGSERIAL
     NOT NULL,
   token VARCHAR(255)
     NOT NULL,
   created TIMESTAMP
     NOT NULL,
   -- NO updated because token is creation only.
-  PRIMARY KEY(authzid),
+  PRIMARY KEY(authenticateid),
   UNIQUE(token)
+);
+
+CREATE TABLE accountauthenticate (
+  accountid BIGINT
+    NOT NULL,
+  authenticateid BIGINT
+    NOT NULL,
+  FOREIGN KEY(accountid) REFERENCES account(accountid),
+  FOREIGN KEY(authenticateid) REFERENCES authenticate(authenticateid)
 );
 
 CREATE TABLE information (
@@ -113,3 +124,19 @@ INNER JOIN
   tag AS TAG
 ON
   TAG.tagid = INFOTAG.tagid;
+
+CREATE VIEW viewAccountWithAuthentication
+AS
+SELECT
+  ACCOUNT.accountid,
+  AUTHN.token
+from
+  account AS ACCOUNT
+INNER JOIN
+  accountauthenticate AS ACAUTHN
+ON
+  ACCOUNT.accountid = ACAUTHN.accountid
+INNER JOIN
+  authenticate AS AUTHN
+ON
+  ACAUTHN.authenticateid = AUTHN.authenticateid;

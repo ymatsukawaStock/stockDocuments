@@ -3,10 +3,18 @@ INSERT INTO account
 VALUES
   ('ex@example.com', 'ymatsukawa', 'ex', NOW(), NOW());
 
-INSERT INTO authz
+INSERT INTO authenticate
   (token, created)
 VALUES
   ('ex', NOW());
+
+INSERT INTO accountauthenticate
+  (accountid, authenticateid)
+VALUES
+  (
+    (SELECT accountid from account order by accountid desc LIMIT 1),
+    (SELECT authenticateid from authenticate order by authenticateid desc LIMIT 1)
+  );
 
 INSERT INTO information
   (subject, detail, created, updated)
