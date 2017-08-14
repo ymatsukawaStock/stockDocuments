@@ -1,7 +1,43 @@
-DROP TABLE IF EXISTS informationTags;
+DROP TABLE IF EXISTS authz;
+DROP TABLE IF EXISTS accounttags;
+DROP TABLE IF EXISTS accountinformation;
+DROP TABLE IF EXISTS account;
+
+DROP VIEW IF EXISTS viewinformationtags;
+DROP TABLE IF EXISTS informationtags;
 DROP TABLE IF EXISTS information;
 DROP TABLE IF EXISTS tag;
 DROP VIEW IF EXISTS viewInformationTags;
+
+CREATE TABLE account (
+  accountid BIGSERIAL
+    NOT NULL,
+  email VARCHAR(255)
+    NOT NULL,
+  name VARCHAR(255)
+    NOT NULL,
+  password VARCHAR(255)
+    NOT NULL,
+  created TIMESTAMP
+    NOT NULL,
+  updated TIMESTAMP
+    NOT NULL,
+  PRIMARY KEY(accountid),
+  UNIQUE(email),
+  UNIQUE(name)
+);
+
+CREATE TABLE authz (
+  authzid BIGSERIAL
+    NOT NULL,
+  token VARCHAR(255)
+    NOT NULL,
+  created TIMESTAMP
+    NOT NULL,
+  -- NO updated because token is creation only.
+  PRIMARY KEY(authzid),
+  UNIQUE(token)
+);
 
 CREATE TABLE information (
   informationid BIGSERIAL
@@ -28,14 +64,34 @@ CREATE TABLE tag (
   UNIQUE(name)
 );
 
-CREATE TABLE informationTags (
+CREATE TABLE informationtags (
   informationid BIGINT
     NOT NULL,
   tagid BIGINT
     NOT NULL,
   PRIMARY KEY(informationid, tagid),
-  FOREIGN KEY(informationid) REFERENCES information(informationid),
-  FOREIGN KEY(tagid) REFERENCES tag(tagid)
+  FOREIGN KEY(informationid) REFERENCES information (informationid),
+  FOREIGN KEY(tagid) REFERENCES tag (tagid)
+);
+
+CREATE TABLE accountinformation (
+  accountid BIGINT
+    NOT NULL,
+  informationid BIGINT
+    NOT NULL,
+  PRIMARY KEY(accountid, informationid),
+  FOREIGN KEY(informationid) REFERENCES information (informationid),
+  FOREIGN KEY(accountid) REFERENCES account (accountid)
+);
+
+CREATE TABLE accounttags (
+  accountid BIGINT
+    NOT NULL,
+  tagid BIGINT
+    NOT NULL,
+  PRIMARY KEY(accountid, tagid),
+  FOREIGN KEY(accountid) REFERENCES account (accountid),
+  FOREIGN KEY(tagid) REFERENCES tag (tagid)
 );
 
 CREATE VIEW viewInformationTags
