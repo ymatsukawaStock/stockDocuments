@@ -140,3 +140,19 @@ INNER JOIN
   authenticate AS AUTHN
 ON
   ACAUTHN.authenticateid = AUTHN.authenticateid;
+
+CREATE VIEW viewAccountWithInformation
+AS
+SELECT
+  AC.accountid,
+  INFO.informationid
+FROM
+  account AS AC
+INNER JOIN
+  accountinformation as ACINFO
+ON
+  AC.accountid = ACINFO.accountid
+INNER JOIN
+  information AS INFO
+ON
+  INFO.informationid = ACINFO.informationid;
