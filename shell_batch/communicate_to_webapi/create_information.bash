@@ -4,6 +4,6 @@
 #   http://localhost:8080/information/create
 
 curl -v -H "Accept: */*" -H "Content-type: application/json" -X POST -d \
-  '{"information": { "subject":"test", "detail":"foobarbaz" }, "tag": {"name": "helldso,newone"} }' \
+  '{"information": { "subject":"test", "detail":"foobarbaz" }, "tag": {"name": "helldso,newtag"} }' \
   http://localhost:8080/information/create
  
